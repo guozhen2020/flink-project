@@ -5,9 +5,6 @@
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
-      <excludeFolder url="file://$MODULE_DIR$/src/main/java/resources" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
@@ -55,23 +52,23 @@
     <orderEntry type="library" name="Maven: javax.media:jai_codec:1.1.3" level="project" />
     <orderEntry type="library" name="Maven: org.jaitools:jt-zonalstats:1.5.0" level="project" />
     <orderEntry type="library" name="Maven: org.jaitools:jt-utils:1.5.0" level="project" />
-    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.affine:jt-affine:1.1.14" level="project" />
-    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.algebra:jt-algebra:1.1.14" level="project" />
-    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.bandmerge:jt-bandmerge:1.1.14" level="project" />
-    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.bandselect:jt-bandselect:1.1.14" level="project" />
-    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.bandcombine:jt-bandcombine:1.1.14" level="project" />
-    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.border:jt-border:1.1.14" level="project" />
-    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.buffer:jt-buffer:1.1.14" level="project" />
-    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.crop:jt-crop:1.1.14" level="project" />
-    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.iterators:jt-iterators:1.1.14" level="project" />
-    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.lookup:jt-lookup:1.1.14" level="project" />
-    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.mosaic:jt-mosaic:1.1.14" level="project" />
-    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.nullop:jt-nullop:1.1.14" level="project" />
-    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.rescale:jt-rescale:1.1.14" level="project" />
-    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.scale:jt-scale:1.1.14" level="project" />
-    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.scale2:jt-scale2:1.1.14" level="project" />
+    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.affine:jt-affine:1.1.15" level="project" />
+    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.algebra:jt-algebra:1.1.15" level="project" />
+    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.bandmerge:jt-bandmerge:1.1.15" level="project" />
+    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.bandselect:jt-bandselect:1.1.15" level="project" />
+    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.bandcombine:jt-bandcombine:1.1.15" level="project" />
+    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.border:jt-border:1.1.15" level="project" />
+    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.buffer:jt-buffer:1.1.15" level="project" />
+    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.crop:jt-crop:1.1.15" level="project" />
+    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.iterators:jt-iterators:1.1.15" level="project" />
+    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.lookup:jt-lookup:1.1.15" level="project" />
+    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.mosaic:jt-mosaic:1.1.15" level="project" />
+    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.nullop:jt-nullop:1.1.15" level="project" />
+    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.rescale:jt-rescale:1.1.15" level="project" />
+    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.scale:jt-scale:1.1.15" level="project" />
+    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.scale2:jt-scale2:1.1.15" level="project" />
     <orderEntry type="library" name="Maven: org.huldra.math:bigint:0.7.1" level="project" />
-    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.stats:jt-stats:1.1.14" level="project" />
+    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.stats:jt-stats:1.1.15" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:27.0-jre" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:failureaccess:1.0" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava" level="project" />
@@ -79,22 +76,22 @@
     <orderEntry type="library" name="Maven: com.google.errorprone:error_prone_annotations:2.2.0" level="project" />
     <orderEntry type="library" name="Maven: com.google.j2objc:j2objc-annotations:1.1" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.mojo:animal-sniffer-annotations:1.17" level="project" />
-    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.translate:jt-translate:1.1.14" level="project" />
-    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.utilities:jt-utilities:1.1.14" level="project" />
-    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.warp:jt-warp:1.1.14" level="project" />
-    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.zonal:jt-zonal:1.1.14" level="project" />
-    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.binarize:jt-binarize:1.1.14" level="project" />
-    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.format:jt-format:1.1.14" level="project" />
-    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.colorconvert:jt-colorconvert:1.1.14" level="project" />
-    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.errordiffusion:jt-errordiffusion:1.1.14" level="project" />
-    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.orderdither:jt-orderdither:1.1.14" level="project" />
-    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.colorindexer:jt-colorindexer:1.1.14" level="project" />
-    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.imagefunction:jt-imagefunction:1.1.14" level="project" />
-    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.piecewise:jt-piecewise:1.1.14" level="project" />
-    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.classifier:jt-classifier:1.1.14" level="project" />
-    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.rlookup:jt-rlookup:1.1.14" level="project" />
-    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.vectorbin:jt-vectorbin:1.1.14" level="project" />
-    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.shadedrelief:jt-shadedrelief:1.1.14" level="project" />
+    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.translate:jt-translate:1.1.15" level="project" />
+    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.utilities:jt-utilities:1.1.15" level="project" />
+    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.warp:jt-warp:1.1.15" level="project" />
+    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.zonal:jt-zonal:1.1.15" level="project" />
+    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.binarize:jt-binarize:1.1.15" level="project" />
+    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.format:jt-format:1.1.15" level="project" />
+    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.colorconvert:jt-colorconvert:1.1.15" level="project" />
+    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.errordiffusion:jt-errordiffusion:1.1.15" level="project" />
+    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.orderdither:jt-orderdither:1.1.15" level="project" />
+    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.colorindexer:jt-colorindexer:1.1.15" level="project" />
+    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.imagefunction:jt-imagefunction:1.1.15" level="project" />
+    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.piecewise:jt-piecewise:1.1.15" level="project" />
+    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.classifier:jt-classifier:1.1.15" level="project" />
+    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.rlookup:jt-rlookup:1.1.15" level="project" />
+    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.vectorbin:jt-vectorbin:1.1.15" level="project" />
+    <orderEntry type="library" name="Maven: it.geosolutions.jaiext.shadedrelief:jt-shadedrelief:1.1.15" level="project" />
     <orderEntry type="library" name="Maven: org.geotools:gt-cql:24-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: com.conversantmedia:disruptor:1.2.13" level="project" />
     <orderEntry type="library" name="Maven: com.miglayout:miglayout:swing:3.7" level="project" />

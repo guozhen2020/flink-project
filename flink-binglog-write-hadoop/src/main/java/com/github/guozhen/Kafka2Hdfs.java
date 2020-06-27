@@ -4,8 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.parser.Feature;
+import com.github.guozhen.bean.BinglogBean;
 import com.github.guozhen.config.*;
 import com.github.guozhen.service.BinglogParseFlatMap;
+import com.github.guozhen.service.BinglogParseFlatMapToString;
 import com.github.guozhen.service.BroadcastProcess;
 import com.github.guozhen.service.sink.HdfsFileSink;
 import com.github.guozhen.service.source.MySqlSource;
@@ -64,7 +66,7 @@ public class Kafka2Hdfs {
         DataStream<String> connectedStream = stream.connect(broadcastStream).process(new BroadcastProcess(broadcastStateDesc));
         connectedStream.print();
 
-        SingleOutputStreamOperator<String> stringStream = connectedStream.flatMap(new BinglogParseFlatMap(mysqlCloumns));
+        SingleOutputStreamOperator<String> stringStream = connectedStream.flatMap(new BinglogParseFlatMapToString(mysqlCloumns));
         stringStream.print();
         stringStream.addSink(HdfsFileSink.getSink(parameterTool));
 

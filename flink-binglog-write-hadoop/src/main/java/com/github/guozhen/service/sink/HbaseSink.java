@@ -16,23 +16,25 @@ import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Table;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
-public class HbaseProcessSink extends ProcessFunction<BinglogBean, String> {
+public class HbaseSink extends ProcessFunction<List<BinglogBean>, String> {
     private static final long serialVersionUID = 1L;
 
-    private Long lastInvokeTime;
     private List<Put> puts = new ArrayList<>(AppConstants.HBASE_DATA_SUBMIT_MAX_SIZE);
     private ParameterTool parameterTool;
     private Map<String,Integer>  hbaseColumnIndexMap = new HashMap<>(32);
     private Map<String,Integer>  mysqlColumnIndexMap = new HashMap<>(32);
 
-    private HbaseProcessSink(){
+    private HbaseSink(){
 
     }
 
-    public HbaseProcessSink(ParameterTool parameterTool,String[] mysqlColumns,String[] hbaseColumns){
+    public HbaseSink(ParameterTool parameterTool, String[] mysqlColumns, String[] hbaseColumns){
         this.parameterTool=parameterTool;
         setHbaseColumnIndexMap(mysqlColumns,hbaseColumns);
     }
@@ -42,8 +44,6 @@ public class HbaseProcessSink extends ProcessFunction<BinglogBean, String> {
 
     @Override
     public void open(org.apache.flink.configuration.Configuration parameters) throws Exception {
-        // 获取系统当前时间
-        lastInvokeTime = System.currentTimeMillis();
 
         try {
             // 加载HBase的配置
@@ -95,44 +95,37 @@ public class HbaseProcessSink extends ProcessFunction<BinglogBean, String> {
     }
 
     @Override
-    public void processElement(BinglogBean value, Context ctx, Collector<String> out) throws Exception {
+    public void processElement(List<BinglogBean> value, Context ctx, Collector<String> out) throws Exception {
         Table table = null;
         try {
-            log.debug("输入的值:"+value);
+            log.debug("本次同步数量:"+value.size());
+            for (BinglogBean bean: value) {
+                // 业务时间戳
+                long eventTime =bean.getEventTime();
+                String[] cloumns = bean.getData().split(AppConstants.FIELD_DELIMITER);
+                String rowKey = setHbaseRowkey(cloumns);
+                //创建一个put请求，用于添加数据或者更新数据
+                Put put = new Put(rowKey.getBytes());
 
-            // 业务时间戳
-            long eventTime =value.getEventTime();
-            String[] cloumns = value.getData().split(AppConstants.FIELD_DELIMITER);
-            String rowKey = setHbaseRowkey(cloumns);
-            //创建一个put请求，用于添加数据或者更新数据
-            Put put = new Put(rowKey.getBytes());
-
-            // 添加值：f1->列族, order->属性名 如age， 第三个->属性值 如25,通过设置时间戳来保证延迟数据的正确性
-            for (Map.Entry<String,Integer> entry: hbaseColumnIndexMap.entrySet()) {
-                String[] cfColumn = entry.getKey().split(":");
-                String cf = cfColumn[0];
-                String column = cfColumn[1];
-                put.addColumn(cf.getBytes(), column.getBytes(),eventTime, cloumns[entry.getValue()].getBytes());
+                // 添加值：f1->列族, order->属性名 如age， 第三个->属性值 如25,通过设置时间戳来保证延迟数据的正确性
+                for (Map.Entry<String,Integer> entry: hbaseColumnIndexMap.entrySet()) {
+                    String[] cfColumn = entry.getKey().split(":");
+                    String cf = cfColumn[0];
+                    String column = cfColumn[1];
+                    put.addColumn(cf.getBytes(), column.getBytes(),eventTime, cloumns[entry.getValue()].getBytes());
+                }
+                puts.add(put);
             }
-            puts.add(put);
 
-
-            //使用ProcessingTime
-            long currentTime = System.currentTimeMillis();
-
-            //开始批次提交数据
-            if (puts.size() == AppConstants.HBASE_DATA_SUBMIT_MAX_SIZE || currentTime - lastInvokeTime >=  AppConstants.HBASE_DATA_SUBMIT_DELAY_TIME) {
-
+            if(puts.size()>0){
                 //获取一个Hbase表
                 table = connection.getTable(TableName.valueOf(parameterTool.get(AppConstants.HBASE_MYSQL_MAPPING_DB_TABLE)));
                 //批次提交
                 table.put(puts);
                 puts.clear();
-                lastInvokeTime = currentTime;
                 table.close();
+                log.debug("插入成功");
             }
-
-            log.debug("插入成功");
         } catch (Exception e) {
             if (null != table) {
                 table.close();
