@@ -21,7 +21,7 @@
     <properties>
         <java.version>1.8</java.version>
         <flink.version>1.11.2</flink.version>
-        <mysql.version>5.1.49</mysql.version>
+        <mysql.version>8.0.16</mysql.version>
         <scala.binary.version>2.12</scala.binary.version>
         <iceberg.version>0.11.0</iceberg.version>
         <hadoop.version>3.0.0-cdh6.1.1</hadoop.version>
