@@ -1,0 +1,37 @@
+date_id             	int                 	日期                  
+hour_id             	int                 	小时                  
+carid               	string              	车辆ID                
+terminalid          	string              	终端设备ID              
+sim                 	string              	终端手机号码              
+platenum            	string              	车牌号                 
+cartypeid           	string              	车辆类型ID              
+engineno            	string              	发动机号                
+vin                 	string              	车辆识别代码（车架号）         
+color               	string              	车身颜色                
+citycode            	string              	所属城市编码              
+parkingids          	string              	停车区域ID              
+toparkingids        	string              	现在所在停车场ID           
+licenseimg          	string              	行驶证照片               
+state               	string              	车辆状态  1：待租 2：预定中 3：服务中  4：停止服务 5:停止服务（低电）
+sms                 	string              	维护人员联系电话 多个之间用","分割 
+toparkingtime       	string              	还|停 车时间
+isdelete            	string              	是否删除  0未删除  1已删除    
+stopadmin           	string              	下架人员                
+stoptime            	string              	下架时间                
+stopreason          	string              	下架原因                
+termitype           	int                 	车机类型0 ywx 1 自己      
+createtime          	string              	创建时间                
+idcardrig           	int                 	是否安装身份证识别设备 0未安装 1 已安装
+trafficinsure       	int                 	交强险                 
+businessinsure      	int                 	商业险                 
+idcardauthid        	string              	身份证识别设备号            
+lastmodifydate      	string              	身份证识别设备号            
+substate            	string              	二级状态                
+cartypefeatureid    	string              	车型属性                
+carinfoversion      	int                 	车辆信息版本              
+datasource          	string              	车辆来源 0是GoFun；1是车源平台 
+feetype_flag        	int                 	是否支持分时业务类型：0不支持，1支持 
+daily_flag          	int                 	是否支持日租业务类型：0不支持，1支持 
+vehiclerent_flag    	int                 	是否支持整租业务类型：0不支持，1支持 
+company_id          	string              	gc商户ID              
+dt                  	int          
