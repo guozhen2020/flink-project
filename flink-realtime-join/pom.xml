@@ -60,7 +60,7 @@
                             <finalName>flink-realtime-join</finalName>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.github.guozhen.StreamDimJoin</mainClass>
+                                    <mainClass>com.github.guozhen.Start</mainClass>
                                 </transformer>
                             </transformers>
                             <filters>
