@@ -6,9 +6,18 @@ import org.apache.flink.configuration.ConfigConstants;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.TimeCharacteristic;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.table.api.*;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
+import org.apache.flink.table.catalog.Catalog;
+import org.apache.flink.table.catalog.hive.HiveCatalog;
+import org.apache.flink.types.Row;
+import org.apache.flink.util.CloseableIterator;
+import org.apache.iceberg.relocated.com.google.common.collect.Lists;
 
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
 
 import static com.github.guozhen.config.Parameters.*;
 
@@ -30,40 +39,65 @@ public class AppExecutor {
 
         // Environment setup
         StreamExecutionEnvironment env = configureStreamExecutionEnvironment();
-        StreamTableEnvironment tenv = StreamTableEnvironment.create(env);
+        EnvironmentSettings.Builder settingsBuilder = EnvironmentSettings
+                .newInstance()
+                .useBlinkPlanner()
+                .inStreamingMode();
+        StreamTableEnvironment tenv = StreamTableEnvironment.create(env,settingsBuilder.build());
 
-        //创建一个名为hive_catalog的 iceberg catalog ，用来从 hive metastore 中加载表
-        tenv.executeSql("CREATE CATALOG iceberg WITH (\n" +
-                "  'type'='iceberg',\n" +
-                "  'catalog-type'='hive'," +
-                "  'uri'='thrift://namenode1:9083'," +
-                "  'warehouse'='hdfs://namenode1/user/hive/warehouse'" +
-                ")");
+        // 创建数据源表：创建hive catalog，创建数据源表sourceTable
+        String HIVE_CATALOG = "myhive";
+        String DEFAULT_DATABASE = "default";
+        String HIVE_CONF_DIR = "hadoop-conf/";
+        Catalog catalog = new HiveCatalog(HIVE_CATALOG, DEFAULT_DATABASE, HIVE_CONF_DIR);
+        tenv.registerCatalog(HIVE_CATALOG, catalog);
+        tenv.useCatalog("myhive");
 
-        tenv.useCatalog("iceberg");
-        tenv.executeSql("CREATE DATABASE iceberg_db");
-        tenv.useDatabase("iceberg_db");
-
-        tenv.executeSql("CREATE TABLE iceberg.iceberg_db.sourceTable (\n" +
+        tenv.executeSql("DROP TABLE IF EXISTS myhive.test.sourceTable");
+        tenv.executeSql("CREATE TABLE myhive.test.sourceTable (\n" +
                 " userid int,\n" +
                 " f_random_str STRING\n" +
                 ") WITH (\n" +
                 " 'connector' = 'datagen',\n" +
-                " 'rows-per-second'='100',\n" +
+                " 'rows-per-second'='5',\n" +
                 " 'fields.userid.kind'='random',\n" +
                 " 'fields.userid.min'='1',\n" +
                 " 'fields.userid.max'='100',\n" +
                 "'fields.f_random_str.length'='10'\n" +
                 ")");
 
+        //写入阶段：创建一个名为hive类型的 iceberg catalog ，用来从 hive metastore 中加载表
+        tenv.executeSql("CREATE CATALOG iceberg WITH (" +
+                "  'type'='iceberg'," +
+                "  'catalog-type'='hive'," +
+                "  'uri'='thrift://namenode1:9083'," +
+                "  'warehouse'='hdfs://namenode1/user/hive/warehouse'" +
+                ")");
+
+        tenv.useCatalog("iceberg");
+        tenv.executeSql("CREATE DATABASE if not exists iceberg_db");
+        tenv.useDatabase("iceberg_db");
+
+        tenv.executeSql("DROP TABLE IF EXISTS iceberg.iceberg_db.iceberg_001");
         tenv.executeSql("CREATE TABLE iceberg.iceberg_db.iceberg_001 (\n" +
                 " id int,\n" +
                 " random_str STRING\n" +
-                ") " );
+                ") WITH ('connector'='iceberg','write.format.default'='parquet')" );
 
-        tenv.executeSql(
-                "insert into iceberg.iceberg_db.iceberg_001 select * from iceberg.iceberg_db.sourceTable");
+        // 写入iceberg表
+        System.out.println("---> insert into iceberg  table from datagen stream table .... ");
+//        tenv.executeSql(
+//                "insert into iceberg.iceberg_db.iceberg_001 select userid,f_random_str from myhive.test.sourceTable");
+
+        Table data=tenv.sqlQuery("select userid,f_random_str from myhive.test.sourceTable");
+        tenv.createTemporaryView("sourceTable",data);
+
+        sql(tenv,"INSERT INTO %s SELECT userid,f_random_str from sourceTable", "iceberg.iceberg_db.iceberg_001");
     }
+    public static final TableSchema FLINK_SCHEMA = TableSchema.builder()
+            .field("userid", DataTypes.INT())
+            .field("f_random_str", DataTypes.STRING())
+            .build();
 
     private StreamExecutionEnvironment configureStreamExecutionEnvironment() {
 
@@ -95,4 +129,27 @@ public class AppExecutor {
         return env;
     }
 
+    private List<Object[]> sql(StreamTableEnvironment env,String query, Object... args) {
+        TableResult tableResult = env.executeSql(String.format(query, args));
+
+        tableResult.getJobClient().ifPresent(c -> {
+            try {
+                c.getJobExecutionResult(Thread.currentThread().getContextClassLoader()).get();
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        List<Object[]> results = Lists.newArrayList();
+        try (CloseableIterator<Row> iter = tableResult.collect()) {
+            while (iter.hasNext()) {
+                Row row = iter.next();
+                results.add(IntStream.range(0, row.getArity()).mapToObj(row::getField).toArray(Object[]::new));
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return results;
+    }
 }
