@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.parser.Feature;
+import com.github.guozhen.bean.BinglogBean;
 import com.github.guozhen.config.AppConstants;
 import com.github.guozhen.config.KafkaConstants;
 import com.github.guozhen.service.BinglogParseFlatMap;
@@ -52,7 +53,7 @@ public class Kafka2HBase {
         });
 
         //解析binglog json
-        SingleOutputStreamOperator<String> stringStream =filterStream.flatMap(new BinglogParseFlatMap(mysqlCloumns));
+        SingleOutputStreamOperator<BinglogBean> stringStream =filterStream.flatMap(new BinglogParseFlatMap(mysqlCloumns));
         stringStream.print();
 
         stringStream.process(new HbaseProcessSink(parameterTool,mysqlCloumns,hbaseCloumns));

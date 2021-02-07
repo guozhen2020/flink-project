@@ -9,10 +9,10 @@ import com.github.guozhen.config.AppConstants;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.util.Collector;
 
-public class BinglogParseFlatMap implements FlatMapFunction<String, BinglogBean>{
+public class BinglogParseFlatMapToString implements FlatMapFunction<String, String>{
 
     private String[] cloumns;
-    public BinglogParseFlatMap(String[] cloumns){
+    public BinglogParseFlatMapToString(String[] cloumns){
         this.cloumns=cloumns;
     }
 
@@ -20,9 +20,10 @@ public class BinglogParseFlatMap implements FlatMapFunction<String, BinglogBean>
      * 解析binglog
      * @param value 输入的一条binglog记录
      * @param out 输出解析后的数据
+     * @throws Exception
      */
     @Override
-    public void flatMap(String value, Collector<BinglogBean> out){
+    public void flatMap(String value, Collector<String> out){
 
         String fieldDelimiter = AppConstants.FIELD_DELIMITER;
         StringBuilder fieldsBuilder = new StringBuilder();
@@ -33,29 +34,28 @@ public class BinglogParseFlatMap implements FlatMapFunction<String, BinglogBean>
         for (int i = 0; i < data.size(); i++) {
             JSONObject obj = data.getJSONObject(i);
             if (obj != null) {
-                BinglogBean bean = new BinglogBean();
-                // 序号id
-                bean.setId(record.getLong("id"));
-                // 库名
-                bean.setDatabase(record.getString("database"));
-                // 表名
-                bean.setTable(record.getString("table"));
-                //业务时间戳
-                bean.setEventTime(record.getLong("es"));
-                // 日志时间戳
-                bean.setLogTime(record.getLong("ts"));
-                // 操作类型
-                bean.setOptType(record.getString("type"));
-                // 表字段数据
+                fieldsBuilder.append(record.getLong("id")); // 序号id
+                fieldsBuilder.append(fieldDelimiter);
+                fieldsBuilder.append(record.getString("database")); // 库名
+                fieldsBuilder.append(fieldDelimiter);
+                fieldsBuilder.append(record.getString("table")); // 表名
+                fieldsBuilder.append(fieldDelimiter);
+                fieldsBuilder.append(record.getLong("es")); //业务时间戳
+                fieldsBuilder.append(fieldDelimiter);
+                fieldsBuilder.append(record.getLong("ts")); // 日志时间戳
+                fieldsBuilder.append(fieldDelimiter);
+                fieldsBuilder.append(record.getString("type")); // 操作类型
                 for (String cloumn : cloumns) {
-                    fieldsBuilder.append(obj.get(cloumn));
                     fieldsBuilder.append(fieldDelimiter);
+                    fieldsBuilder.append(obj.get(cloumn)); // 表字段数据
                 }
-                String binglogData = fieldsBuilder.toString();
-                binglogData=binglogData.substring(0,binglogData.length() - 1);
-                bean.setData(binglogData);
 
-                out.collect(bean);
+//                for (Map.Entry<String, Object> entry : obj.entrySet()) {
+//                    fieldsBuilder.append(fieldDelimiter);
+//                    fieldsBuilder.append(entry.getValue()); // 表字段数据
+//                }
+
+                out.collect(fieldsBuilder.toString());
                 //清空缓存
                 fieldsBuilder.delete(0, fieldsBuilder.length());
             }
